@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 
 /**
+ * http://www.scala-sbt.org/release/docs/Getting-Started/Full-Def.html
  * https://github.com/harrah/xsbt/wiki/Full-Configuration
  * https://github.com/harrah/xsbt/wiki/Full-Configuration-Example
  * https://github.com/scalaz/scalaz/blob/master/project/ScalazBuild.scala
@@ -10,7 +11,7 @@ import Keys._
 object BuildSettings {
   val buildOrganization = "example.com"
   val buildVersion = "0.0.1-SNAPSHOT"
-  val buildScalaVersion = "2.10.0"
+  val buildScalaVersion = "2.10.1"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization := buildOrganization,
@@ -48,8 +49,9 @@ object ShellPrompt {
 object Dependencies {
   object V {
     val lift = "2.5-SNAPSHOT"
-    val logback = "1.0.7"
-    val slf4j = "1.7.0"
+    val logback = "1.0.11"
+    val slf4j = "1.7.5"
+    val specs2 = "1.14"
   }
 
   val lift = "net.liftweb" %% "lift-webkit" % V.lift withSources()
@@ -57,12 +59,12 @@ object Dependencies {
   val logbackcore    = "ch.qos.logback" % "logback-core"     % V.logback withSources()
   val logbackclassic = "ch.qos.logback" % "logback-classic"  % V.logback withSources()
 
-  val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.0.v20120127" % "container"
-
   val slf4j = "org.slf4j" % "slf4j-api" % V.slf4j withSources()
+
+  val specs2 = "org.specs2" %% "specs2" % V.specs2 % "test" withSources()
 }
 
-object ExampleBuild extends Build {
+object LiftQuickstartBuild extends Build {
   import BuildSettings._
   import Dependencies._
 
@@ -72,34 +74,28 @@ object ExampleBuild extends Build {
   val commonDeps = Seq (
     slf4j,
     logbackcore,
-    logbackclassic
+    logbackclassic,
+    specs2
   )
 
   val websiteDeps = Seq (
     lift
   )
 
-  lazy val example = Project (
-    "example",
-    file ("."),
+  lazy val example = Project ("lift-quickstart-root", file ("."),
     settings = BuildSettings.buildSettings
   ) aggregate (backend, website)
 
-  lazy val backend = Project (
-    "backend",
-    file ("backend"),
+  lazy val backend = Project ("lift-quickstart-backend", file ("backend"),
     settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= commonDeps)
   )
 
-  lazy val website = Project (
-    id = "website",
-    base = file("website"),
-    settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= websiteDeps ++ commonDeps ++ Seq(
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.9.v20130131" % "container",
+  lazy val website = Project ("lift-quickstart-website", file("website"),
+    settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= commonDeps ++ websiteDeps ++ Seq(
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.10.v20130312" % "container",
       //next line needed cause of https://github.com/harrah/xsbt/issues/499
       "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container" artifacts (Artifact("javax.servlet", "jar", "jar"))
-    )
-    ) ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
+    )) ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
       scanDirectories in Compile := Nil,
       port in config("container") := 8080
     ) ++ jrebelSettings ++ Seq (
