@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 
 /**
+ * http://www.scala-sbt.org/release/docs/Getting-Started/Full-Def.html
  * https://github.com/harrah/xsbt/wiki/Full-Configuration
  * https://github.com/harrah/xsbt/wiki/Full-Configuration-Example
  * https://github.com/scalaz/scalaz/blob/master/project/ScalazBuild.scala
