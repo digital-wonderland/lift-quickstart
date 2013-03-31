@@ -48,8 +48,8 @@ object ShellPrompt {
 object Dependencies {
   object V {
     val lift = "2.5-SNAPSHOT"
-    val logback = "1.0.7"
-    val slf4j = "1.7.0"
+    val logback = "1.0.11"
+    val slf4j = "1.7.5"
   }
 
   val lift = "net.liftweb" %% "lift-webkit" % V.lift withSources()
