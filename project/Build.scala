@@ -60,7 +60,7 @@ object Dependencies {
   val slf4j = "org.slf4j" % "slf4j-api" % V.slf4j withSources()
 }
 
-object ExampleBuild extends Build {
+object LiftQuickstartBuild extends Build {
   import BuildSettings._
   import Dependencies._
 
@@ -77,27 +77,20 @@ object ExampleBuild extends Build {
     lift
   )
 
-  lazy val example = Project (
-    "example",
-    file ("."),
+  lazy val example = Project ("lift-quickstart-root", file ("."),
     settings = BuildSettings.buildSettings
   ) aggregate (backend, website)
 
-  lazy val backend = Project (
-    "backend",
-    file ("backend"),
+  lazy val backend = Project ("lift-quickstart-backend", file ("backend"),
     settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= commonDeps)
   )
 
-  lazy val website = Project (
-    id = "website",
-    base = file("website"),
+  lazy val website = Project ("lift-quickstart-website", file("website"),
     settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= websiteDeps ++ commonDeps ++ Seq(
       "org.eclipse.jetty" % "jetty-webapp" % "8.1.9.v20130131" % "container",
       //next line needed cause of https://github.com/harrah/xsbt/issues/499
       "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container" artifacts (Artifact("javax.servlet", "jar", "jar"))
-    )
-    ) ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
+    )) ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
       scanDirectories in Compile := Nil,
       port in config("container") := 8080
     ) ++ jrebelSettings ++ Seq (
