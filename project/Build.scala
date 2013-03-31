@@ -51,6 +51,7 @@ object Dependencies {
     val lift = "2.5-SNAPSHOT"
     val logback = "1.0.11"
     val slf4j = "1.7.5"
+    val specs2 = "1.14"
   }
 
   val lift = "net.liftweb" %% "lift-webkit" % V.lift withSources()
@@ -59,6 +60,8 @@ object Dependencies {
   val logbackclassic = "ch.qos.logback" % "logback-classic"  % V.logback withSources()
 
   val slf4j = "org.slf4j" % "slf4j-api" % V.slf4j withSources()
+
+  val specs2 = "org.specs2" %% "specs2" % V.specs2 % "test" withSources()
 }
 
 object LiftQuickstartBuild extends Build {
@@ -71,7 +74,8 @@ object LiftQuickstartBuild extends Build {
   val commonDeps = Seq (
     slf4j,
     logbackcore,
-    logbackclassic
+    logbackclassic,
+    specs2
   )
 
   val websiteDeps = Seq (
