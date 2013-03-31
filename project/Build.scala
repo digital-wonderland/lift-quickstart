@@ -1,0 +1,109 @@
+import sbt._
+import Keys._
+
+/**
+ * https://github.com/harrah/xsbt/wiki/Full-Configuration
+ * https://github.com/harrah/xsbt/wiki/Full-Configuration-Example
+ * https://github.com/scalaz/scalaz/blob/master/project/ScalazBuild.scala
+ */
+
+object BuildSettings {
+  val buildOrganization = "example.com"
+  val buildVersion = "0.0.1-SNAPSHOT"
+  val buildScalaVersion = "2.10.0"
+
+  val buildSettings = Defaults.defaultSettings ++ Seq (
+    organization := buildOrganization,
+    version := buildVersion,
+    scalaVersion := buildScalaVersion,
+    shellPrompt  := ShellPrompt.buildShellPrompt,
+    //crossScalaVersions := Seq("2.9.2", "2.10.0-M2")
+    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  )
+}
+
+// Shell prompt which shows the current project, 
+// git branch and build version
+object ShellPrompt {
+  object devnull extends ProcessLogger {
+    def info (s: => String) {}
+    def error (s: => String) { }
+    def buffer[T] (f: => T): T = f
+  }
+  def currBranch = (
+    ("git status -sb" lines_! devnull headOption)
+      getOrElse "-" stripPrefix "## "
+    )
+
+  val buildShellPrompt = {
+    (state: State) => {
+      val currProject = Project.extract (state).currentProject.id
+      "%s:%s:%s> ".format (
+        currProject, currBranch, BuildSettings.buildVersion
+      )
+    }
+  }
+}
+
+object Dependencies {
+  object V {
+    val lift = "2.5-SNAPSHOT"
+    val logback = "1.0.7"
+    val slf4j = "1.7.0"
+  }
+
+  val lift = "net.liftweb" %% "lift-webkit" % V.lift withSources()
+
+  val logbackcore    = "ch.qos.logback" % "logback-core"     % V.logback withSources()
+  val logbackclassic = "ch.qos.logback" % "logback-classic"  % V.logback withSources()
+
+  val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.0.v20120127" % "container"
+
+  val slf4j = "org.slf4j" % "slf4j-api" % V.slf4j withSources()
+}
+
+object ExampleBuild extends Build {
+  import BuildSettings._
+  import Dependencies._
+
+  import com.github.siasia.PluginKeys._
+  import fi.jawsy.sbtplugins.jrebel.JRebelPlugin._
+
+  val commonDeps = Seq (
+    slf4j,
+    logbackcore,
+    logbackclassic
+  )
+
+  val websiteDeps = Seq (
+    lift
+  )
+
+  lazy val example = Project (
+    "example",
+    file ("."),
+    settings = BuildSettings.buildSettings
+  ) aggregate (backend, website)
+
+  lazy val backend = Project (
+    "backend",
+    file ("backend"),
+    settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= commonDeps)
+  )
+
+  lazy val website = Project (
+    id = "website",
+    base = file("website"),
+    settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= websiteDeps ++ commonDeps ++ Seq(
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.9.v20130131" % "container",
+      //next line needed cause of https://github.com/harrah/xsbt/issues/499
+      "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container" artifacts (Artifact("javax.servlet", "jar", "jar"))
+    )
+    ) ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
+      scanDirectories in Compile := Nil,
+      port in config("container") := 8080
+    ) ++ jrebelSettings ++ Seq (
+      jrebel.webLinks <++= webappResources in Compile
+    )
+  ) dependsOn (backend)
+}
