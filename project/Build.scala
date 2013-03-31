@@ -57,8 +57,6 @@ object Dependencies {
   val logbackcore    = "ch.qos.logback" % "logback-core"     % V.logback withSources()
   val logbackclassic = "ch.qos.logback" % "logback-classic"  % V.logback withSources()
 
-  val jetty = "org.eclipse.jetty" % "jetty-webapp" % "8.1.0.v20120127" % "container"
-
   val slf4j = "org.slf4j" % "slf4j-api" % V.slf4j withSources()
 }
 
