@@ -68,7 +68,7 @@ object LiftQuickstartBuild extends Build {
   import BuildSettings._
   import Dependencies._
 
-  import com.github.siasia.PluginKeys._
+  import com.earldouglas.xsbtwebplugin.PluginKeys._
   import fi.jawsy.sbtplugins.jrebel.JRebelPlugin._
 
   val commonDeps = Seq (
@@ -95,7 +95,7 @@ object LiftQuickstartBuild extends Build {
       "org.eclipse.jetty" % "jetty-webapp" % "8.1.11.v20130520" % "container",
       //next line needed cause of https://github.com/harrah/xsbt/issues/499
       "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container" artifacts (Artifact("javax.servlet", "jar", "jar"))
-    )) ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
+    )) ++ com.earldouglas.xsbtwebplugin.WebPlugin.webSettings ++ Seq(
       scanDirectories in Compile := Nil,
       port in config("container") := 8080
     ) ++ jrebelSettings ++ Seq (
