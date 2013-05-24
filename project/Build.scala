@@ -92,7 +92,7 @@ object LiftQuickstartBuild extends Build {
 
   lazy val website = Project ("lift-quickstart-website", file("website"),
     settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= commonDeps ++ websiteDeps ++ Seq(
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.10.v20130312" % "container",
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.11.v20130520" % "container",
       //next line needed cause of https://github.com/harrah/xsbt/issues/499
       "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container" artifacts (Artifact("javax.servlet", "jar", "jar"))
     )) ++ com.github.siasia.WebPlugin.webSettings ++ Seq(
