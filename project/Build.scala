@@ -11,7 +11,7 @@ import Keys._
 object BuildSettings {
   val buildOrganization = "example.com"
   val buildVersion = "0.0.1-SNAPSHOT"
-  val buildScalaVersion = "2.10.1"
+  val buildScalaVersion = "2.10.2"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization := buildOrganization,
@@ -48,7 +48,7 @@ object ShellPrompt {
 
 object Dependencies {
   object V {
-    val lift = "2.5-SNAPSHOT"
+    val lift = "2.5"
     val logback = "1.0.11"
     val slf4j = "1.7.5"
     val specs2 = "1.14"
@@ -92,7 +92,7 @@ object LiftQuickstartBuild extends Build {
 
   lazy val website = Project ("lift-quickstart-website", file("website"),
     settings = BuildSettings.buildSettings ++ Seq (libraryDependencies ++= commonDeps ++ websiteDeps ++ Seq(
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.11.v20130520" % "container",
+      "org.eclipse.jetty" % "jetty-webapp" % "9.0.5.v20130815" % "container",
       //next line needed cause of https://github.com/harrah/xsbt/issues/499
       "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container" artifacts (Artifact("javax.servlet", "jar", "jar"))
     )) ++ com.earldouglas.xsbtwebplugin.WebPlugin.webSettings ++ Seq(
