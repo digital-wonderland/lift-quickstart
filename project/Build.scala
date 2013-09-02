@@ -69,7 +69,7 @@ object LiftQuickstartBuild extends Build {
   import Dependencies._
 
   import com.earldouglas.xsbtwebplugin.PluginKeys._
-  import fi.jawsy.sbtplugins.jrebel.JRebelPlugin._
+  import fi.gekkio.sbtplugins.jrebel.JRebelPlugin._
 
   val commonDeps = Seq (
     slf4j,
